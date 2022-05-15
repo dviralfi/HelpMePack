@@ -1,0 +1,11 @@
+LICENSE
+MANIFEST.in
+README.md
+pyproject.toml
+setup.cfg
+src/helpmepack/__init__.py
+src/helpmepack/helpmepack.py
+src/helpmepack.egg-info/PKG-INFO
+src/helpmepack.egg-info/SOURCES.txt
+src/helpmepack.egg-info/dependency_links.txt
+src/helpmepack.egg-info/top_level.txt
