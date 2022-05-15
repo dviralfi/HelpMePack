@@ -3,7 +3,8 @@ Python Package helper CLI
 
 ### LEARN
 
-[LEARN ABOUT PYTHON PACKAGING](https://packaging.python.org/en/latest/)
+[Learn about Python packaging](https://packaging.python.org/en/latest/)
+
 [Simple Python packaging tuitorial](https://packaging.python.org/en/latest/tutorials/packaging-projects/)
 
 
