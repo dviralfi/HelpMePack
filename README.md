@@ -1,11 +1,11 @@
 # Python Packaging helper
-Python Package helper CLI 
+A Python Packaging helper CLI
 
 ### LEARN
 
 [Learn about Python packaging](https://packaging.python.org/en/latest/)
 
-[Simple Python packaging tuitorial](https://packaging.python.org/en/latest/tutorials/packaging-projects/)
+[Simple packaging tutorial](https://packaging.python.org/en/latest/tutorials/packaging-projects/)
 
 
 ## Installation
