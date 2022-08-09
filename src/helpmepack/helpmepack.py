@@ -113,9 +113,13 @@ def add_src_folder(package_name,ignore_list):
     print("'__init__.py' file created! ")
 
     # move all the files (except the ignored files) to the package_name folder :
+    gitignore_list = []
+    with open(os.path.join(MODULE_DIRECTORY,'.gitignore')) as f:
+        
+
 
     for file_name in os.listdir():
-        if file_name not in ignore_list:
+        if file_name not in ignore_list :
             source = file_name
             destination = os.path.join(package_name_folder,file_name)
             shutil.move(source, destination)
@@ -170,7 +174,7 @@ def main():
             LICENSE_type = input("press Enter for Default - MIT) : ").lower()
 
     python_requires = input("Python Version: (<=x.x,==x.x,>=x.x) : ")
-    python_version = int(float(python_requires))
+    python_version = python_requires[2] # 2.5 is Python 2
 
     # gets dependencies of package
     install_requires = os.popen('pip freeze').read()
