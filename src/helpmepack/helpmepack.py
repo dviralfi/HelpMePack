@@ -114,10 +114,10 @@ def add_src_folder(package_name,ignore_list):
 
     # move all the files (except the ignored files) to the package_name folder :
 
-    with open(os.path.join(MODULE_DIRECTORY,'.gitignore')) as f:
+    with open(os.path.join(os.getcwd(),'.gitignore')) as f:
         gitignore_list = f.readlines()
 
-    folders_ignore = [x[:-2] for x in gitignore_list if x.endswith()("/\n")]
+    folders_ignore = [x[:-2] for x in gitignore_list if x.endswith("/\n")]
     ext_ignore = [x[1:-1] for x in gitignore_list if x.startswith("*")]
 
     files_to_move = []
@@ -136,7 +136,7 @@ def add_src_folder(package_name,ignore_list):
         files_to_move.append(file)
     
     for file in files_to_move:
-        
+
         source = file
         destination = os.path.join(package_name_folder,file)
         shutil.move(source, destination)
