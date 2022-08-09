@@ -113,17 +113,34 @@ def add_src_folder(package_name,ignore_list):
     print("'__init__.py' file created! ")
 
     # move all the files (except the ignored files) to the package_name folder :
-    gitignore_list = []
+
     with open(os.path.join(MODULE_DIRECTORY,'.gitignore')) as f:
+        gitignore_list = f.readlines()
+
+    folders_ignore = [x[:-2] for x in gitignore_list if x.endswith()("/\n")]
+    ext_ignore = [x[1:-1] for x in gitignore_list if x.startswith("*")]
+
+    files_to_move = []
+    for file in os.listdir():
+        if file in ignore_list:
+            continue
+
+        for ext in ext_ignore:
+            if file.endswith(ext):
+                break
+
+        for folder in folders_ignore:
+            if file.startswith(folder):
+                break
+
+        files_to_move.append(file)
+    
+    for file in files_to_move:
         
-
-
-    for file_name in os.listdir():
-        if file_name not in ignore_list :
-            source = file_name
-            destination = os.path.join(package_name_folder,file_name)
-            shutil.move(source, destination)
-            print(file_name," Moved to: ",destination)
+        source = file
+        destination = os.path.join(package_name_folder,file)
+        shutil.move(source, destination)
+        print(file," Moved to: ",destination)
 
     
 def add_tests_folder():
