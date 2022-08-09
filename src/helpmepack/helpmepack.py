@@ -87,7 +87,7 @@ def add_setup_cfg_file(package_name,package_version,author_name,author_email,des
         print("setup.cgf file created! ")
 
 
-def add_src_folder(package_name,ignore_list):
+def add_src_folder(package_name, ignore_list):
     """
     Adds the 'src' folder to root directory
     Adds the 'package_name' folder inside 'src' folder
@@ -121,22 +121,29 @@ def add_src_folder(package_name,ignore_list):
     ext_ignore = [x[1:-1] for x in gitignore_list if x.startswith("*")]
 
     files_to_move = []
+    
+
     for file in os.listdir():
+        ignored = False
+        
         if file in ignore_list:
             continue
 
         for ext in ext_ignore:
             if file.endswith(ext):
+                ignored = True
                 break
 
         for folder in folders_ignore:
             if file.startswith(folder):
+                ignored = True
                 break
 
-        files_to_move.append(file)
+        if not ignored:
+            files_to_move.append(file)
     
-    for file in files_to_move:
 
+    for file in files_to_move:
         source = file
         destination = os.path.join(package_name_folder,file)
         shutil.move(source, destination)
@@ -164,8 +171,8 @@ def main():
     print("Make sure you running in the Project Main Directory")
 
     # Initializing the files list to ignore when adding all the package files to 'src' folder
-
-    ignore_list = ['.git','README.md','.gitignore','requirments.txt','LICENSE','src','tests','pyproject.toml','setup.cfg','setup.py']
+                                                    
+    ignore_list = ['.git','README.md','.gitignore','requirements.txt','LICENSE','src','tests','pyproject.toml','setup.cfg','setup.py']
 
     # Checks if the package got virtual environment folder, and if so - add it to ignore list
 
