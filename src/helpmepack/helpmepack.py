@@ -1,7 +1,9 @@
 import os, shutil
 from pathlib import Path
+from xml.etree.ElementTree import VERSION
 
 MODULE_DIRECTORY = Path(__file__).parent
+LICENSE_TEMPLATE_DIRECTORY = 'all_templates\licenses_templates'
 
 """
 Python Package helper CLI 
@@ -11,7 +13,6 @@ Python Package helper CLI
 Issues :
 
     * license types finder is quiet bad - need to upgrade the finding algorythm
-
 """
 
 
@@ -21,16 +22,16 @@ def add_LICENSE_file(LICENSE_type):
     """
 
     if not os.path.exists('LICENSE'):
-        for temp_license_type in os.listdir(os.path.join(MODULE_DIRECTORY,'all_templates\licenses_templates')):
+        for temp_license_type in os.listdir(os.path.join(MODULE_DIRECTORY,LICENSE_TEMPLATE_DIRECTORY)):
             if LICENSE_type.lower().startswith(temp_license_type.lower()):
 
                 # copy the template to the project directory
-                template_license_file_path = "all_templates\\licenses_templates\\" + temp_license_type
+                template_license_file_path = os.path.join(LICENSE_TEMPLATE_DIRECTORY, temp_license_type)
                 shutil.copyfile(os.path.join(MODULE_DIRECTORY,template_license_file_path), 'LICENSE')
                 return
 
         print("LICENSE type not valid! creating Default one... (MIT) ")
-        template_license_file_path = "all_templates\\licenses_templates\\" + 'mit.txt'
+        template_license_file_path = os.path.join(LICENSE_TEMPLATE_DIRECTORY, 'mit.txt')
         shutil.copyfile(os.path.join(MODULE_DIRECTORY,template_license_file_path), 'LICENSE')
     else:
         print("LICENSE file already exists...")
@@ -73,20 +74,12 @@ def add_setup_cfg_file(package_name,package_version,author_name,author_email,des
     """
     Adds the setup.cfg file to root directory
     """
-
-    # cehcks if the user input some dependencies of his package:
     if install_requires:
-        # if yes - putting it inside setup.cfg file for the 'build' program to understand.
-
-        install_requires_text = "install_requires = \n"+'\n'.join(install_requires)
+        install_requires_text = "install_requires = \n"+'\n    ' + install_requires
     else:
-        # no dependencies to the package - leave this section of the setup.cfg file empty.
         install_requires_text = ''
-
-
     # Initializing the text the program is going to put inside setup.cfg file:
     SETUP_CFG_TEXT = '[metadata]\nname = {package_name}\nversion = {package_version}\nauthor = {author_name}\nauthor_email = {author_email}\ndescription = {description}\nlong_description = file: README.md\nlong_description_content_type = text/markdown\nurl = {url}\nproject_urls =\nBug Tracker = https://github.com/pypa/sampleproject/issues\nclassifiers =\nProgramming Language :: Python :: {python_version}\nLicense :: OSI Approved :: {LICENSE_type} License\nOperating System :: OS Independent\n[options]\npackage_dir =\n = src \npackages = find:\npython_requires = {python_requires}\n{install_requires_text}\n[options.packages.find]\nwhere = src'.format(package_name=package_name,package_version=package_version,author_name=author_name,author_email=author_email,description=description,url=url,python_version=python_version,LICENSE_type=LICENSE_type.upper(),python_requires=python_requires,install_requires=install_requires,install_requires_text=install_requires_text)
-
 
     with open("setup.cfg",'w') as f:
         f.write(SETUP_CFG_TEXT)
@@ -136,20 +129,17 @@ def add_tests_folder():
         print("'tests' folder created! ")
 
 
-# ======================== MAIN FUNCTION Of CLI====================
-
-
 def main():
     """
     CLI in Action
     
     """
-
+    
     # Start of CLI:
 
     print("Welcome to HelpMePack - the Python Package Helper CLI ! ")
-    print("Please make sure you have your '.git' folder, and README.md, .gitignore, requirments.txt, LICENSE files - in your project directory.")
-    print("All the other project files will be moved to the 'src' folder.")
+    print("Please make sure that: '.git' folder, README.md, .gitignore, requirments.txt, LICENSE files - are in your project directory.")
+    print("All the other project files will be moved to 'src' folder.")
     print("Make sure you running in the Project Main Directory")
 
     # Initializing the files list to ignore when adding all the package files to 'src' folder
@@ -158,37 +148,38 @@ def main():
 
     # Checks if the package got virtual environment folder, and if so - add it to ignore list
 
-    venv_folder_name = input("Enter the name of this project's Virtual Environment folder: (if it don't have one - press Enter)")
+    venv_folder_name = input("Virtual Environment folder name: (if it don't have one - press Enter)")
     if venv_folder_name:
         ignore_list.append(str(venv_folder_name))
 
     # Main CLI action (Getting the info from the user):
-    package_name = input("Enter the Package name:")
-    package_version = input("Enter the version of the package: (press Enter for Default - 0.0.1)")
+    package_name = input("Package Name: ")
+    package_version = input("Package Version (Default - 0.0.1) : ")
     if not package_version:
         package_version = '0.0.1'
-    author_name = input("Enter the Author name:")
-    author_email = input("Enter the Author Email:")
-    description = input("Enter short Description about the package:")
-    url = input("Enter the url of the Package (GitHub,GitLab,etc..):")
-    python_version = int(float(input("enter Python version: (2 or 3, in form of x.x)")))
-    LICENSE_type = input("Enter the LICENSE type: (if you you dont have one just enter the type and the program will add a corresponding license template, press Enter for Default - MIT )").lower()
-    python_requires = input("Enter the Python version your package requires: (in form of <=x.x or ==x.x, or >=x.x)")
+    author_name = input("Author name: ")
+    author_email = input("Author Email: ")
+    description = input("Package short Desription: ")
+    url = input("Package url (GitHub,GitLab,etc..) : ")
 
-    # gets from the user the dependencies of his package...
-    install_requires = []
-    dependency_package = ''
-    while dependency_package != 'q':
-        
-        dependency_package = input("Enter your package dependencies packages names (for example-'requests==2.3.4',gunicorn>=1.0.0','matplotlib<=3.5.1'..)\nwhen you are done enter 'q': ")
-        if dependency_package != 'q':
-            install_requires.append(dependency_package)
+    LICENSE_type = input("LICENSE type: Default - MIT, (For Licenses list press: i) : ").lower()
+    if LICENSE_type == 'i':
+        licenses = [os.path.splitext(filename)[0].upper() for filename in os.listdir(LICENSE_TEMPLATE_DIRECTORY)]
+        for license in licenses: print(license, end=", ")
+        while LICENSE_type == 'i':
+            LICENSE_type = input("press Enter for Default - MIT) : ").lower()
+
+    python_requires = input("Enter the Python version your package requires: (<=x.x,==x.x,>=x.x) : ")
+    python_version = int(float(python_requires))
+
+    # gets dependencies of package
+    install_requires = os.popen('pip freeze').read()
+    install_requires = '\n'.join([requirement for requirement in install_requires.split('\n') if not requirement.startswith("helpmepack")]) # removing `helpmepack`` package from reqs
     
     # The HelpMePack program uses the default way of handling packaging in Python - 'src' folder:
-    add_src_folder(package_name,ignore_list)
+    add_src_folder(package_name, ignore_list)
 
-    # adds the mandatory files (with the user info blend in them) to the root directory of the package: 
-
+    # adds mandatory files to package root directory: 
     add_LICENSE_file(LICENSE_type)
     add_pyproject_file()
     add_README_file(package_name,author_name,description,url,install_requires)
