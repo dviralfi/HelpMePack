@@ -3,7 +3,7 @@ from pathlib import Path
 from xml.etree.ElementTree import VERSION
 
 MODULE_DIRECTORY = Path(__file__).parent
-LICENSE_TEMPLATE_DIRECTORY = 'all_templates\licenses_templates'
+LICENSE_TEMPLATE_DIRECTORY = os.path.join(MODULE_DIRECTORY,'all_templates','licenses_templates')
 
 """
 Python Package helper CLI 
@@ -148,13 +148,13 @@ def main():
 
     # Checks if the package got virtual environment folder, and if so - add it to ignore list
 
-    venv_folder_name = input("Virtual Environment folder name: (if it don't have one - press Enter)")
+    venv_folder_name = input("Virtual Environment folder name (if it don't have one - press Enter) : ")
     if venv_folder_name:
         ignore_list.append(str(venv_folder_name))
 
     # Main CLI action (Getting the info from the user):
     package_name = input("Package Name: ")
-    package_version = input("Package Version (Default - 0.0.1) : ")
+    package_version = input("Package Version (press Enter for Default - 0.0.1) : ")
     if not package_version:
         package_version = '0.0.1'
     author_name = input("Author name: ")
@@ -162,14 +162,14 @@ def main():
     description = input("Package short Desription: ")
     url = input("Package url (GitHub,GitLab,etc..) : ")
 
-    LICENSE_type = input("LICENSE type: Default - MIT, (For Licenses list press: i) : ").lower()
+    LICENSE_type = input("LICENSE type: press Enter for Default - MIT, (For Licenses list press: i) : ").lower()
     if LICENSE_type == 'i':
         licenses = [os.path.splitext(filename)[0].upper() for filename in os.listdir(LICENSE_TEMPLATE_DIRECTORY)]
         for license in licenses: print(license, end=", ")
         while LICENSE_type == 'i':
             LICENSE_type = input("press Enter for Default - MIT) : ").lower()
 
-    python_requires = input("Enter the Python version your package requires: (<=x.x,==x.x,>=x.x) : ")
+    python_requires = input("Python Version: (<=x.x,==x.x,>=x.x) : ")
     python_version = int(float(python_requires))
 
     # gets dependencies of package
